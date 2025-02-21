@@ -22,7 +22,10 @@
 </head>
 <body>
 
-    <video id="videoPlayer" controls autoplay muted></video>
+    <video id="videoPlayer" controls autoplay>
+        <source id="videoSource" src="" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
     <script>
         const videos = [
@@ -33,29 +36,18 @@
 
         let currentVideo = 0;
         const videoPlayer = document.getElementById("videoPlayer");
+        const videoSource = document.getElementById("videoSource");
 
         function playNextVideo() {
-            if (videos.length === 0) return;
-            videoPlayer.src = videos[currentVideo];
-            videoPlayer.play().catch(error => console.error("Video playback error:", error));
+            videoSource.src = videos[currentVideo];
+            videoPlayer.load();  // Reloads video source
+            videoPlayer.play().catch(error => console.error("Playback error:", error));
             currentVideo = (currentVideo + 1) % videos.length;
         }
 
         videoPlayer.addEventListener("ended", playNextVideo);
-        videoPlayer.addEventListener("error", () => {
-            console.error("Error loading video, skipping to next.");
-            playNextVideo();
-        });
 
-        // Shuffle the video order (Optional)
-        function shuffleVideos() {
-            for (let i = videos.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [videos[i], videos[j]] = [videos[j], videos[i]];
-            }
-        }
-
-        shuffleVideos(); // Call only if random order is needed
+        // Load and play the first video
         playNextVideo();
     </script>
 
